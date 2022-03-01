@@ -24,6 +24,7 @@ vec3 center(0.0,0.0,0.0) ; // Center look at point
 int amountinit = 5;
 int w = 500, h = 500 ; // width and height 
 float fovy = 90.0 ; // For field of view
+
 #else 
 EXTERN vec3 eyeinit ; 
 EXTERN vec3 upinit ; 
@@ -31,14 +32,16 @@ EXTERN vec3 center ;
 EXTERN int amountinit;
 EXTERN int w, h ; 
 EXTERN float fovy ; 
-#endif 
+EXTERN float maxdepth = 5;
 
+#endif 
+EXTERN string filename = "raytrace.png";
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
 EXTERN mat4 projection, modelview; // The mvp matrices
 EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
 static enum {view, translate, scale} transop ; // which operation to transform 
-enum shape {cube, sphere, teapot} ;
+
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 
@@ -61,7 +64,6 @@ EXTERN GLfloat shininess ;
 const int maxobjects = 10 ; 
 EXTERN int numobjects ; 
 EXTERN struct object {
-  shape type ; 
   GLfloat size ;
   GLfloat ambient[4] ; 
   GLfloat diffuse[4] ; 

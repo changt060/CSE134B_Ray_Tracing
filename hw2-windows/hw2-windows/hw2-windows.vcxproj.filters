@@ -16,33 +16,21 @@
     <Filter Include="Header Files\UCSD">
       <UniqueIdentifier>{fed5d401-ef7d-468e-8457-13dd43a32eed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\UCSD">
-      <UniqueIdentifier>{b02572ee-0ad3-4a11-99cb-3f311cf1fd72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\shaders">
       <UniqueIdentifier>{c5569e18-5a0a-44fd-bc73-107bfe8b81e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="display.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="readfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UCSD\grader.cpp">
-      <Filter>Source Files\UCSD</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry.cpp">
+    <ClCompile Include="primitive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,6 +51,9 @@
       <Filter>Header Files\UCSD</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

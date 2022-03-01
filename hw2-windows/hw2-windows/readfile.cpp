@@ -34,6 +34,7 @@
 using namespace std;
 #include "variables.h" 
 #include "readfile.h"
+#include "primitive.h"
 
 // You may not need to use the following two functions, but it is provided
 // here for convenience
@@ -161,11 +162,6 @@ void readfile(const char* filename)
                     validinput = readvals(s,10,values); // 10 values eye cen up fov
                     if (validinput) {
 
-                        // YOUR CODE FOR HW 2 HERE
-                        // Use all of values[0...9]
-                        // You may need to use the upvector fn in Transform.cpp
-                        // to set up correctly. 
-                        // Set eyeinit upinit center fovy in variables.h 
                         for (i = 0; i < 3; i++) {
                             eyeinit[i] = values[i];
                             center[i] = values[i + 3];
@@ -173,6 +169,25 @@ void readfile(const char* filename)
                         }
                         fovy = values[9];
                         upinit = Transform::upvector(upinit, glm::normalize(eyeinit - center));
+                    }
+                    else if (cmd == "size") {
+                        validinput = readvals(s, 2, values);
+                        if (validinput) {
+                            w = values[0];
+                            h = values[1];
+                        }
+                    }
+                    else if (cmd == "maxdepth") {
+                        validinput = readvals(s, 1, values);
+                        if (validinput) {
+                            maxdepth = values[0];
+                        }
+                    }
+                    else if (cmd == "sphere") {
+                        validinput = readvals(s, 4, values);
+                        if (validinput) {
+                            sphere sph = sphere(values[0], values[1], values[2], values[3]);
+                        }
                     }
                 }
 
@@ -200,14 +215,6 @@ void readfile(const char* filename)
                             // Set the object's transform
                             obj->transform = transfstack.top(); 
 
-                            // Set the object's type
-                            if (cmd == "sphere") {
-                                obj->type = sphere; 
-                            } else if (cmd == "cube") {
-                                obj->type = cube; 
-                            } else if (cmd == "teapot") {
-                                obj->type = teapot; 
-                            }
                         }
                         ++numobjects; 
                     }
