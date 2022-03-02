@@ -1,19 +1,38 @@
 #ifndef PRIMITIVE_H
 #define PRIMITIVE_H
 
-	class primitive {
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+class Primitive {
 	public:
-		class sphere {
-			float x;
-			float y;
-			float z;
-			float radius;
-		};
-		
-		sphere(float x, float y, float z, float radius);
-	};
+		//glm::vec3 ambient;
+		//glm::vec3 diffuse;
+		//glm::vec3 specular;
+		//glm::vec3 emmision;
+		Primitive() {}
+};
 
-	class triangle {
+class Sphere : public Primitive {
+	public:
+		glm::vec3 center;
+		float radius;
+		Sphere(float x, float y, float z, float radius) {
+			this->center = glm::vec3(x, y, z);
+			this->radius = radius;
+		}
+};
 
-	};
-
+class Triangle : public Primitive {
+	public:
+		glm::vec3 v1;
+		glm::vec3 v2;
+		glm::vec3 v3;
+public:
+	Triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3) {
+		this->v1 = v1;
+		this->v2 = v2;
+		this->v3 = v3;
+	}
+};
+#endif

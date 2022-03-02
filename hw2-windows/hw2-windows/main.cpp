@@ -13,11 +13,8 @@
 #include <stack>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "shaders.h"
 #include "Transform.h"
 #include <FreeImage.h>
-#include "UCSD/grader.h"
-#include "Geometry.h"
 
 using namespace std ; 
 
@@ -46,7 +43,9 @@ void saveScreenshot(string fname) {
 
 
 void init() {
- 
+	maxdepth = 5;
+	attenuation = vec3(1.0, 0.0, 0.0);
+	filename = "raytrace.png";
 }
 
 int main(int argc, char* argv[]) {

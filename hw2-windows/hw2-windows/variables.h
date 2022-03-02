@@ -13,11 +13,16 @@
 #define EXTERN extern 
 #endif
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <vector>
+#include "primitive.h"
+
 EXTERN int amount; // The amount of rotation for each arrow press
 EXTERN vec3 eye; // The (regularly updated) vector coordinates of the eye 
 EXTERN vec3 up;  // The (regularly updated) vector coordinates of the up 
 
-#ifdef MAINPROGRAM 
+/*#ifdef MAINPROGRAM 
 vec3 eyeinit(0.0,0.0,5.0) ; // Initial eye position, also for resets
 vec3 upinit(0.0,1.0,0.0) ; // Initial up position, also for resets
 vec3 center(0.0,0.0,0.0) ; // Center look at point 
@@ -25,19 +30,29 @@ int amountinit = 5;
 int w = 500, h = 500 ; // width and height 
 float fovy = 90.0 ; // For field of view
 
-#else 
+#else */
 EXTERN vec3 eyeinit ; 
 EXTERN vec3 upinit ; 
 EXTERN vec3 center ; 
 EXTERN int amountinit;
 EXTERN int w, h ; 
 EXTERN float fovy ; 
-EXTERN float maxdepth = 5;
+//#endif 
 
-#endif 
-EXTERN string filename = "raytrace.png";
+EXTERN float maxdepth;
+EXTERN vector<Primitive*> primitives;
+EXTERN int maxverts;
+EXTERN vector<vec3> vertices;
+EXTERN vec3 ambient;
+EXTERN vec3 diffuse;
+EXTERN vec3 specular;
+EXTERN vec3 emission;
+EXTERN float shininess;
+EXTERN vec3 attenuation;
+EXTERN vector<vec3> lightpos;
+EXTERN vector<vec3> lightcol;
+EXTERN string filename;
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
-EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
 EXTERN mat4 projection, modelview; // The mvp matrices
 EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
 static enum {view, translate, scale} transop ; // which operation to transform 
@@ -46,22 +61,22 @@ EXTERN float sx, sy ; // the scale in x and y
 EXTERN float tx, ty ; // the translation in x and y
 
 // Lighting parameter array, similar to that in the fragment shader
-const int numLights = 10 ; 
-EXTERN GLfloat lightposn [4*numLights] ; // Light Positions
-EXTERN GLfloat lightcolor[4*numLights] ; // Light Colors
-EXTERN GLfloat lightransf[4*numLights] ; // Lights transformed by modelview
-EXTERN int numused ;                     // How many lights are used 
+//const int numLights = 10 ; 
+//EXTERN GLfloat lightposn [4*numLights] ; // Light Positions
+//EXTERN GLfloat lightcolor[4*numLights] ; // Light Colors
+//EXTERN GLfloat lightransf[4*numLights] ; // Lights transformed by modelview
+//EXTERN int numused ;                     // How many lights are used 
 
 // Materials (read from file) 
 // With multiple objects, these are colors for each.
-EXTERN GLfloat ambient[4] ; 
-EXTERN GLfloat diffuse[4] ; 
-EXTERN GLfloat specular[4] ; 
-EXTERN GLfloat emission[4] ; 
-EXTERN GLfloat shininess ; 
+//EXTERN GLfloat ambient[4] ; 
+//EXTERN GLfloat diffuse[4] ; 
+//EXTERN GLfloat specular[4] ; 
+//EXTERN GLfloat emission[4] ; 
+//EXTERN GLfloat shininess ; 
 
 // For multiple objects, read from a file.  
-const int maxobjects = 10 ; 
+/*const int maxobjects = 10;
 EXTERN int numobjects ; 
 EXTERN struct object {
   GLfloat size ;
@@ -71,10 +86,10 @@ EXTERN struct object {
   GLfloat emission[4] ; 
   GLfloat shininess ;
   mat4 transform ; 
-} objects[maxobjects] ;
+} objects[maxobjects] ;*/
 
 // Variables to set uniform params for lighting fragment shader 
-EXTERN GLuint lightcol ; 
+/*EXTERN GLuint lightcol;
 EXTERN GLuint lightpos ; 
 EXTERN GLuint numusedcol ; 
 EXTERN GLuint enablelighting ; 
@@ -82,5 +97,5 @@ EXTERN GLuint ambientcol ;
 EXTERN GLuint diffusecol ; 
 EXTERN GLuint specularcol ; 
 EXTERN GLuint emissioncol ; 
-EXTERN GLuint shininesscol ; 
+EXTERN GLuint shininesscol ; */
 

@@ -14,10 +14,6 @@
 // The functions readvals and readfile do basic parsing.  You can of course 
 // rewrite the parser as you wish, but we think this basic form might be 
 // useful to you.  It is a very simple parser.
-
-// Please fill in parts that say YOUR CODE FOR HW 2 HERE. 
-// Read the other parts to get a context of what is going on. 
-  
 /*****************************************************************************/
 
 // Basic includes to get this file to work.  
@@ -94,7 +90,7 @@ void readfile(const char* filename)
 
                 // Process the light, add it to database.
                 // Lighting Command
-                if (cmd == "light") {
+                /*if (cmd == "light") {
                     if (numused == numLights) { // No more Lights 
                         cerr << "Reached Maximum Number of Lights " << numused << " Will ignore further lights\n";
                     } else {
@@ -112,7 +108,7 @@ void readfile(const char* filename)
                             ++numused;
                         }
                     }
-                }
+                }*/
 
                 // Material Commands 
                 // Ambient, diffuse, specular, shininess properties for each object.
@@ -120,31 +116,31 @@ void readfile(const char* filename)
                 // the skeleton, also as a hint of how to do the more complex ones.
                 // Note that no transforms/stacks are applied to the colors. 
 
-                else if (cmd == "ambient") {
-                    validinput = readvals(s, 4, values); // colors 
+                if (cmd == "ambient") {
+                    validinput = readvals(s, 3, values);
                     if (validinput) {
-                        for (i = 0; i < 4; i++) {
+                        for (i = 0; i < 3; i++) {
                             ambient[i] = values[i]; 
                         }
                     }
                 } else if (cmd == "diffuse") {
-                    validinput = readvals(s, 4, values); 
+                    validinput = readvals(s, 3, values);
                     if (validinput) {
-                        for (i = 0; i < 4; i++) {
+                        for (i = 0; i < 3; i++) {
                             diffuse[i] = values[i]; 
                         }
                     }
                 } else if (cmd == "specular") {
-                    validinput = readvals(s, 4, values); 
+                    validinput = readvals(s, 3, values);
                     if (validinput) {
-                        for (i = 0; i < 4; i++) {
+                        for (i = 0; i < 3; i++) {
                             specular[i] = values[i]; 
                         }
                     }
                 } else if (cmd == "emission") {
-                    validinput = readvals(s, 4, values); 
+                    validinput = readvals(s, 3, values); 
                     if (validinput) {
-                        for (i = 0; i < 4; i++) {
+                        for (i = 0; i < 3; i++) {
                             emission[i] = values[i]; 
                         }
                     }
@@ -152,6 +148,23 @@ void readfile(const char* filename)
                     validinput = readvals(s, 1, values); 
                     if (validinput) {
                         shininess = values[0]; 
+                    }
+                } else if (cmd == "directional" || cmd == "point") {
+                    validinput = readvals(s, 6, values);
+                    if (validinput) {
+                        vec3 curLightPos(values[0], values[1], values[2]);
+                        lightpos.push_back(curLightPos);
+                        vec3 curLightColor(values[3], values[4], values[5]);
+                        lightcol.push_back(curLightColor);
+
+                        // Need to transform light position before displaying//////////////////////////////////////////
+                    }
+                } else if (cmd == "attenuation") {
+                    validinput = readvals(s, 3, values);
+                    if (validinput) {
+                        for (i = 0; i < 3; i++) {
+                            attenuation[i] = values[i];
+                        }
                     }
                 } else if (cmd == "size") {
                     validinput = readvals(s,2,values); 
@@ -186,7 +199,53 @@ void readfile(const char* filename)
                     else if (cmd == "sphere") {
                         validinput = readvals(s, 4, values);
                         if (validinput) {
-                            sphere sph = sphere(values[0], values[1], values[2], values[3]);
+                            Primitive * sphere = new Sphere(values[0], values[1], values[2], values[3]);
+                            primitives.push_back(sphere);
+                            // Need to set object's light properties///////////////////////////////////
+                            // Need to set object's transform/////////////////////////////////////
+                        }
+                    }
+                    else if (cmd == "maxverts") {
+                        validinput = readvals(s, 1, values);
+                        if (validinput) {
+                            maxverts = values[0];
+                        }
+                    }
+                    else if (cmd == "maxvertnorms") {
+                        validinput = readvals(s, 1, values);
+                        if (validinput) {
+                            // optional
+                        }
+                    }
+                    else if (cmd == "vertex") {
+                        validinput = readvals(s, 3, values);
+                        if (validinput) {
+                            vec3 vertex = vec3(values[0], values[1], values[2]);
+                            vertices.push_back(vertex);
+                        }
+                    }
+                    else if (cmd == "vertexnormal") {
+                        validinput = readvals(s, 6, values);
+                        if (validinput) {
+                            // optional
+                        }
+                    }
+                    else if (cmd == "tri") {
+                        validinput = readvals(s, 3, values);
+                        if (validinput) {
+                            vec3 v1 = vertices[values[0]];
+                            vec3 v2 = vertices[values[1]];
+                            vec3 v3 = vertices[values[2]];
+                            Primitive* triangle = new Triangle(v1, v2, v3);
+                            primitives.push_back(triangle);
+                            // Need to set object's light properties///////////////////////////////////
+                            // Need to set object's transform/////////////////////////////////////
+                        }
+                    }
+                    else if (cmd == "trinormal") {
+                        validinput = readvals(s, 3, values);
+                        if (validinput) {
+                            // optional
                         }
                     }
                 }
@@ -194,7 +253,7 @@ void readfile(const char* filename)
                 // I've left the code for loading objects in the skeleton, so 
                 // you can get a sense of how this works.  
                 // Also look at demo.txt to get a sense of why things are done this way.
-                else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot") {
+                /*else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot") {
                     if (numobjects == maxobjects) { // No more objects 
                         cerr << "Reached Maximum Number of Objects " << numobjects << " Will ignore further objects\n";
                     } else {
@@ -218,7 +277,7 @@ void readfile(const char* filename)
                         }
                         ++numobjects; 
                     }
-                }
+                }*/
 
                 else if (cmd == "translate") {
                     validinput = readvals(s,3,values); 
@@ -289,7 +348,7 @@ void readfile(const char* filename)
         tx = ty = 0.0;  // keyboard controllled translation in x and y  
         useGlu = false; // don't use the glu perspective/lookat fns
 
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
     } else {
         cerr << "Unable to Open Input Data File " << filename << "\n"; 
         throw 2; 

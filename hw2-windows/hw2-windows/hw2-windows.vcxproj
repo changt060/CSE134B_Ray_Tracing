@@ -74,15 +74,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="primitive.cpp" />
     <ClCompile Include="readfile.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Geometry.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="readfile.h" />
-    <ClInclude Include="shaders.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UCSD\grader.h" />
     <ClInclude Include="variables.h" />
