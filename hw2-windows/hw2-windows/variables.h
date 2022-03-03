@@ -16,7 +16,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <string>
 #include "primitive.h"
+using namespace std;
+using namespace glm;
 
 EXTERN int amount; // The amount of rotation for each arrow press
 EXTERN vec3 eye; // The (regularly updated) vector coordinates of the eye 
@@ -35,7 +38,7 @@ EXTERN vec3 eyeinit ;
 EXTERN vec3 upinit ; 
 EXTERN vec3 center ; 
 EXTERN int amountinit;
-EXTERN int w, h ; 
+EXTERN int width, height ; 
 EXTERN float fovy ; 
 //#endif 
 
@@ -54,7 +57,7 @@ EXTERN vector<vec3> lightcol;
 EXTERN string filename;
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN mat4 projection, modelview; // The mvp matrices
-EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
+//EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
 static enum {view, translate, scale} transop ; // which operation to transform 
 
 EXTERN float sx, sy ; // the scale in x and y 

@@ -73,13 +73,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="readfile.cpp" />
+    <ClCompile Include="raytracer.cpp" />
+    <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="scene.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="readfile.h" />
+    <ClInclude Include="Sampler.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UCSD\grader.h" />
     <ClInclude Include="variables.h" />

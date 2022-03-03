@@ -21,13 +21,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="raytracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="readfile.cpp">
+    <ClCompile Include="scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,6 +48,12 @@
       <Filter>Header Files\UCSD</Filter>
     </ClInclude>
     <ClInclude Include="primitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
