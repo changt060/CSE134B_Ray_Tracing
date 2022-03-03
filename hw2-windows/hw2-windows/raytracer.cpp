@@ -62,6 +62,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < height; i++) {
 	  for (int j = 0; j < width; j++) {
 		  Ray* ray = cam->generateRay((float)(i+0.5f), (float)(j+0.5f));
+
 		  //cout << i << j << "\n";
 	  }
   }
