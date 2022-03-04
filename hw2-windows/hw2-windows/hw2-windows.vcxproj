@@ -76,6 +76,7 @@
     <ClCompile Include="raytracer.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="Film.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
