@@ -23,6 +23,7 @@ using namespace std;
 //#include "variables.h" 
 #include "readfile.h" // prototypes for readfile.cpp  
 #include "Camera.h"
+#include "Sampler.cpp"
 
 
 
@@ -40,7 +41,20 @@ void saveScreenshot(string fname) {
   delete pixels;
 }
 
-
+RGBQUAD findColor(Intersection hit) { // findColor for dummies
+	//cout << 1000000 << "\n";
+	RGBQUAD red = { 0.0f, 0.0f, 255.0f, 0.0f };
+	RGBQUAD green = { 0.0f, 255.0f, 0.0f, 0.0f };
+	RGBQUAD blue = { 255.0f, 0.0f, 0.0f, 0.0f };
+	RGBQUAD black = { 0.0f, 0.0f, 0.0f, 0.0f };
+	RGBQUAD white = { 255.0f, 255.0f, 255.0f, 0.0f };
+	if (hit.distance < 0) { // no intersection
+		return black;
+	}
+	else { // intersection
+		return red;
+	}
+}
 
 void init() {
 	maxdepth = 5;
@@ -49,24 +63,45 @@ void init() {
 }
 
 int main(int argc, char* argv[]) {
-
+	vec3 eyeinit(0.0f, 0.0f, 5.0f); // Initial eye position, also for resets
+	vec3 upinit(0.0f, 1.0f, 0.0f); // Initial up position, also for resets
+	vec3 center(0.0f, 0.0f, 0.0f);
+	float fovy = 90.0f;
+	width = 640;
+	height = 480;
   FreeImage_Initialise();
   //glutInit(&argc, argv);
   //glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
   //glutCreateWindow("HW2: Scene Viewer");
 
-
+  FIBITMAP* image = FreeImage_Allocate(width, height, 24);
   init();
-  readfile(argv[1]);
-  Camera* cam = new Camera(upinit, eyeinit, center, fovy);
+  //readfile(argv[1]);
+  Sphere* sph = new Sphere(0.0f, 0.0f, -3.0f, 1.0f);
+  vec3 tri1(-1.0f, 1.0f, -15.0f);
+  vec3 tri2(1.0f, 1.0f, -15.0f);
+  vec3 tri3(0.0f, -1.0f, -15.0f);
+  Triangle* tri = new Triangle(tri1, tri2, tri3);
+  vector<Primitive*> scene;
+  Intersection* intersect = new Intersection();
+
+  //scene.push_back(tri);
+  scene.push_back(sph);
+ 
+  Camera* cam = new Camera(upinit, center, eyeinit, fovy);
   for (int i = 0; i < height; i++) {
 	  for (int j = 0; j < width; j++) {
 		  Ray* ray = cam->generateRay((float)(i+0.5f), (float)(j+0.5f));
-
+		  Intersection hit = intersect->findIntersection(*ray, scene);
+		  RGBQUAD color = findColor(hit);
+		  //cout << hit.distance;
+		  FreeImage_SetPixelColor(image, j, i, &color);
+		 
 		  //cout << i << j << "\n";
 	  }
   }
-  saveScreenshot(filename);
+  FreeImage_Save(FIF_PNG, image, "bla.png", 0);
+  //saveScreenshot(filename);
 
   //glutDisplayFunc(display);
   //glutSpecialFunc(specialKey);

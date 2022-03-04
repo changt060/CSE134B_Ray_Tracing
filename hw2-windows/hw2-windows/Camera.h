@@ -44,7 +44,7 @@ public:
 			vec3 n = normalize(cross((C - A), (B - A)));
 			float t = (dot(A, n) - dot(ray.pos, n)) / dot(ray.dir, n);
 			if (t < 0) { // no intersection
-				hit.distance = std::numeric_limits<float>::infinity();
+				hit.distance = 1000000;
 				return hit;
 			}
 			/* Using algorithm from UCSD Online Discussion board by ravir11 */
@@ -66,11 +66,15 @@ public:
 			vec3 e = ray.pos;
 			vec3 ctr = obj->center;
 			vec3 d = ray.dir;
+			//std::cout <<"pos: " << ray.pos[0] << ray.pos[1] << ray.pos[2] << "\n";
+			//std::cout << "dir: " << ray.dir[0] << ray.dir[1] << ray.dir[2] << "\n";
+			
 			float a = dot(d, d); // basically = 1
 			float b = dot(2.0f * d, (e - ctr));
 			float c = dot((e - ctr), (e - ctr)) - (obj->radius * obj->radius);
 			if ((b * b) - (4.0f * a * c) < 0) { // no intersection
-				hit.distance = std::numeric_limits<float>::infinity();
+				//std::cout << hit.distance;
+				hit.distance = 1000000;
 				return hit;
 			}
 			float dee = sqrt((b * b) - (4.0f * a * c));
@@ -78,29 +82,36 @@ public:
 			float root2 = (-b + dee) / (2.0f * a);
 			float t0 = root1;
 			float t1 = root2;
+			//std::cout << "t0: " << t0 << "\n" << "t1: " << t1 << "\n";
 			if (root2 == std::min(root1, root2)) { // ensuring that t0 is smaller
 				t0 = root2;
 				t1 = root1;
 			}
 			// TODO NEED TO GET NORMAL/////////////////////////////////////////////
 			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
+				
 				hit.distance = t0;
+				std::cout << hit.distance;
 			}
 			else if (t0 < 0 && t1 > 0) {
 				hit.distance = t1;
+				
 			}
 			else if (t0 < 0 && t1 < 0) { // no intersection
-				hit.distance = std::numeric_limits<float>::infinity();
+				
+				hit.distance = 1000000;
 			}
 			return hit;
 		}
 	}
 	Intersection findIntersection(Ray ray, vector<Primitive*> scene) {
-		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity(ish)
+		float min_distance = 1000000; //start at infinity(ish)
 		Intersection hit;
 		for (Primitive* obj : scene) {
+			
 			Intersection temp = intersect(ray, obj);
 			if (temp.distance < min_distance) {
+				//std::cout << obj->type;
 				min_distance = temp.distance;
 				hit = temp;
 			}
@@ -130,7 +141,7 @@ public:
 		vec3 v = cross(w, u);
 
 		float theta = (fovy * pie / 180.0) / 2; // in radians
-		float alpha = (width / height) * tan(theta) * (j - (width / 2.0f)) / (width / 2.0f);
+		float alpha = (float)(width / height) * tan(theta) * (j - (width / 2.0f)) / (width / 2.0f);
 		float beta = tan(theta) * (i - (height / 2.0f)) / (height / 2.0f);
 		vec3 direction = normalize(alpha * u + beta * v - w);
 		Ray* ray = new Ray(lookfrom, direction);
