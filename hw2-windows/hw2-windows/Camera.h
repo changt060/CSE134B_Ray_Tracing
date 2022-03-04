@@ -11,54 +11,85 @@ using namespace glm;
 const float pie = 3.14159265; // For portability across platforms
 
 class Ray {
-	public:
-		vec3 dir;
-		vec3 pos;
-		Ray(vec3 position, vec3 direction) {
-			this->dir = normalize(direction);
-			this->pos = position;
-		}
-		vec3 getPoint(float t) {
-			return pos + t * dir;
-		}
+public:
+	vec3 dir;
+	vec3 pos;
+	Ray(vec3 position, vec3 direction) {
+		this->dir = normalize(direction);
+		this->pos = position;
+	}
+	vec3 getPoint(float t) {
+		return pos + t * dir;
+	}
 };
 class Intersection {
-		
+
 public:
 	float distance;
 	vec3 position;
 	vec3 normal;
-	vec3 direction;
+	//vec3 direction;
 	Primitive* primitive;
 	Intersection intersect(Ray ray, Primitive* obj) {
+		Intersection hit;
+		hit.primitive = obj; // setting the intersection to point to the object
 		if (obj->type == 3) {
-			//Triangle
-
+			// Triangle
+			vec3 A = obj->v1;
+			vec3 B = obj->v2;
+			vec3 C = obj->v3;
+			vec3 BC = B - C;
+			vec3 CA = A - C;
+			vec3 AB = B - A;
+			vec3 n = normalize(cross((C - A), (B - A)));
+			float t = (dot(A, n) - dot(ray.pos, n)) / dot(ray.dir, n);
+			if (t < 0) { // no intersection
+				hit.distance = std::numeric_limits<float>::infinity();
+				return hit;
+			}
+			/* Using algorithm from UCSD Online Discussion board by ravir11 */
+			vec3 pointOfIntersection = ray.pos + t * ray.dir;
+			vec3 ApNormal = (cross(n, BC)) / (dot(cross(n, BC), CA));
+			vec3 BpNormal = (cross(n, CA)) / (dot(cross(n, CA), AB));
+			vec3 CpNormal = (cross(n, AB)) / (dot(cross(n, AB), BC));
+			float a = dot(ApNormal, pointOfIntersection) - dot(ApNormal, C);
+			float b = dot(BpNormal, pointOfIntersection) - dot(BpNormal, A);
+			float c = dot(CpNormal, pointOfIntersection) - dot(CpNormal, B);
+			if (a >= 0 && b >= 0 && c >= 0) {
+				hit.distance = t;
+				hit.normal = n;
+			}
+			return hit;
 		}
 		else if (obj->type == 0) {
-			//Sphere;
-			Intersection hit;
-			hit.primitive = obj;
+			// Sphere
 			vec3 e = ray.pos;
 			vec3 ctr = obj->center;
 			vec3 d = ray.dir;
 			float a = dot(d, d); // basically = 1
 			float b = dot(2.0f * d, (e - ctr));
 			float c = dot((e - ctr), (e - ctr)) - (obj->radius * obj->radius);
-			if ((b * b) - (4.0f * a * c) < 0) { // no intersrction
+			if ((b * b) - (4.0f * a * c) < 0) { // no intersection
 				hit.distance = std::numeric_limits<float>::infinity();
 				return hit;
 			}
-				float dee = sqrt((b * b) - (4.0f * a * c));
-			float t0 = (-b - dee) / (2.0f * a);
-			float t1 = (-b + dee) / (2.0f * a);
-			if (t0 > 0 && t1 >0) { // 
+			float dee = sqrt((b * b) - (4.0f * a * c));
+			float root1 = (-b - dee) / (2.0f * a);
+			float root2 = (-b + dee) / (2.0f * a);
+			float t0 = root1;
+			float t1 = root2;
+			if (root2 == std::min(root1, root2)) { // ensuring that t0 is smaller
+				t0 = root2;
+				t1 = root1;
+			}
+			// TODO NEED TO GET NORMAL/////////////////////////////////////////////
+			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
 				hit.distance = t0;
-			} else if (t0 == t1) {
-				hit.distance = t0;
-			} else if (t0 < 0 && t1 > 0) {
+			}
+			else if (t0 < 0 && t1 > 0) {
 				hit.distance = t1;
-			} else if (t0 < 0 && t1 < 0) { // no intersection
+			}
+			else if (t0 < 0 && t1 < 0) { // no intersection
 				hit.distance = std::numeric_limits<float>::infinity();
 			}
 			return hit;
@@ -78,7 +109,7 @@ public:
 	}
 };
 
-class Camera{
+class Camera {
 public:
 	vec3 upvector;
 	vec3 lookat;
@@ -99,7 +130,7 @@ public:
 		vec3 v = cross(w, u);
 
 		float theta = (fovy * pie / 180.0) / 2; // in radians
-		float alpha = (width/height)*tan(theta) * (j - (width / 2.0f)) / (width / 2.0f);
+		float alpha = (width / height) * tan(theta) * (j - (width / 2.0f)) / (width / 2.0f);
 		float beta = tan(theta) * (i - (height / 2.0f)) / (height / 2.0f);
 		vec3 direction = normalize(alpha * u + beta * v - w);
 		Ray* ray = new Ray(lookfrom, direction);
