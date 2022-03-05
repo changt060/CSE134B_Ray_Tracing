@@ -48,7 +48,7 @@ RGBQUAD findColor(Intersection hit) { // findColor for dummies
 	RGBQUAD blue = { 255.0f, 0.0f, 0.0f, 0.0f };
 	RGBQUAD black = { 0.0f, 0.0f, 0.0f, 0.0f };
 	RGBQUAD white = { 255.0f, 255.0f, 255.0f, 0.0f };
-	if (hit.distance < 0) { // no intersection
+	if (hit.distance == std::numeric_limits<float>::infinity()) { // no intersection
 		return black;
 	}
 	else { // intersection
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 	float fovy = 90.0f;
 	width = 640;
 	height = 480;
-  FreeImage_Initialise();
+	FreeImage_Initialise();
   //glutInit(&argc, argv);
   //glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
   //glutCreateWindow("HW2: Scene Viewer");
@@ -77,30 +77,28 @@ int main(int argc, char* argv[]) {
   FIBITMAP* image = FreeImage_Allocate(width, height, 24);
   init();
   //readfile(argv[1]);
-  Sphere* sph = new Sphere(0.0f, 0.0f, -3.0f, 1.0f);
-  vec3 tri1(-1.0f, 1.0f, -15.0f);
-  vec3 tri2(1.0f, 1.0f, -15.0f);
-  vec3 tri3(0.0f, -1.0f, -15.0f);
+  Sphere* sph = new Sphere(0.0f, 0.0f, -3.0f, 3.0f);
+  vec3 tri1(-1.0f, 1.0f, -5.0f);
+  vec3 tri2(1.0f, 1.0f, -5.0f);
+  vec3 tri3(0.0f, -1.0f, -5.0f);
   Triangle* tri = new Triangle(tri1, tri2, tri3);
   vector<Primitive*> scene;
   Intersection* intersect = new Intersection();
-
-  //scene.push_back(tri);
-  scene.push_back(sph);
+	
+	scene.push_back(tri);
+	//scene.push_back(sph);
  
-  Camera* cam = new Camera(upinit, center, eyeinit, fovy);
-  for (int i = 0; i < height; i++) {
-	  for (int j = 0; j < width; j++) {
-		  Ray* ray = cam->generateRay((float)(i+0.5f), (float)(j+0.5f));
-		  Intersection hit = intersect->findIntersection(*ray, scene);
-		  RGBQUAD color = findColor(hit);
-		  //cout << hit.distance;
-		  FreeImage_SetPixelColor(image, j, i, &color);
-		 
-		  //cout << i << j << "\n";
-	  }
-  }
-  FreeImage_Save(FIF_PNG, image, "bla.png", 0);
+	Camera* cam = new Camera(upinit, center, eyeinit, fovy);
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			Ray* ray = cam->generateRay((float)(i+0.5f), (float)(j+0.5f));
+			Intersection hit = intersect->findIntersection(*ray, scene);
+			//cout << hit.distance;/////////////////////////////////
+			RGBQUAD color = findColor(hit);
+			FreeImage_SetPixelColor(image, j, i, &color);
+		}
+	}
+	FreeImage_Save(FIF_PNG, image, "bla.png", 0);
   //saveScreenshot(filename);
 
   //glutDisplayFunc(display);
@@ -109,6 +107,6 @@ int main(int argc, char* argv[]) {
   //glutReshapeFunc(reshape);
   //glutReshapeWindow(w, h);
   //glutMainLoop();
-  FreeImage_DeInitialise();
-  return 0;
+	FreeImage_DeInitialise();
+	return 0;
 }

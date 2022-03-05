@@ -1,23 +1,22 @@
 ﻿  raytracer.cpp
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(46,18): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(46,24): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(46,30): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(46,38): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(47,20): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(47,26): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(47,34): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(47,40): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(48,19): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(48,27): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(48,33): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(48,39): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(49,20): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(49,26): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(49,32): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(49,38): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(50,20): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(50,28): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(50,36): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\raytracer.cpp(50,44): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
-C:\Users\dldan\Documents\GitHub\hw2-windows\hw2-windows\Camera.h(106): warning C4715: 'Intersection::intersect': not all control paths return a value
-  hw2-windows.vcxproj -> C:\Users\dldan\Documents\GitHub\hw2-windows\Debug\hw2-windows.exe
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(46,18): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(46,24): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(46,30): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(46,38): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(47,20): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(47,26): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(47,34): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(47,40): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(48,19): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(48,27): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(48,33): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(48,39): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(49,20): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(49,26): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(49,32): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(49,38): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(50,20): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(50,28): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(50,36): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\hw2-windows\raytracer.cpp(50,44): warning C4838: conversion from 'float' to 'BYTE' requires a narrowing conversion
+  hw2-windows.vcxproj -> C:\Users\chang\Desktop\CSE134B_Ray_Tracing\hw2-windows\Debug\hw2-windows.exe

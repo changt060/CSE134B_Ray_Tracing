@@ -8,7 +8,7 @@
 
 using namespace glm;
 
-const float pie = 3.14159265; // For portability across platforms
+const float pie = 3.14159265;
 
 class Ray {
 public:
@@ -30,21 +30,25 @@ public:
 	vec3 normal;
 	//vec3 direction;
 	Primitive* primitive;
+	Intersection() {
+		this->distance = std::numeric_limits<float>::infinity();
+	}
 	Intersection intersect(Ray ray, Primitive* obj) {
-		Intersection hit;
+		Intersection hit = Intersection();
 		hit.primitive = obj; // setting the intersection to point to the object
 		if (obj->type == 3) {
 			// Triangle
 			vec3 A = obj->v1;
 			vec3 B = obj->v2;
 			vec3 C = obj->v3;
-			vec3 BC = B - C;
+			vec3 BC = C - B;
 			vec3 CA = A - C;
+			vec3 AC = C - A;
 			vec3 AB = B - A;
-			vec3 n = normalize(cross((C - A), (B - A)));
+			vec3 n = normalize(cross(AB, AC));
 			float t = (dot(A, n) - dot(ray.pos, n)) / dot(ray.dir, n);
 			if (t < 0) { // no intersection
-				hit.distance = 1000000;
+				hit.distance = std::numeric_limits<float>::infinity();
 				return hit;
 			}
 			/* Using algorithm from UCSD Online Discussion board by ravir11 */
@@ -59,9 +63,7 @@ public:
 				hit.distance = t;
 				hit.normal = n;
 			}
-			return hit;
-		}
-		else if (obj->type == 0) {
+		} else if (obj->type == 0) {
 			// Sphere
 			vec3 e = ray.pos;
 			vec3 ctr = obj->center;
@@ -74,7 +76,6 @@ public:
 			float c = dot((e - ctr), (e - ctr)) - (obj->radius * obj->radius);
 			if ((b * b) - (4.0f * a * c) < 0) { // no intersection
 				//std::cout << hit.distance;
-				hit.distance = 1000000;
 				return hit;
 			}
 			float dee = sqrt((b * b) - (4.0f * a * c));
@@ -89,24 +90,23 @@ public:
 			}
 			// TODO NEED TO GET NORMAL/////////////////////////////////////////////
 			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
-				
 				hit.distance = t0;
-				std::cout << hit.distance;
+				//std::cout << hit.distance;
 			}
 			else if (t0 < 0 && t1 > 0) {
 				hit.distance = t1;
 				
 			}
-			else if (t0 < 0 && t1 < 0) { // no intersection
-				
-				hit.distance = 1000000;
-			}
-			return hit;
+			/*else if (t0 < 0 && t1 < 0) { // no intersection
+				hit.distance = std::numeric_limits<float>::infinity();
+			}*/
 		}
+		return hit;
 	}
 	Intersection findIntersection(Ray ray, vector<Primitive*> scene) {
-		float min_distance = 1000000; //start at infinity(ish)
-		Intersection hit;
+		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity(ish)
+		Intersection hit = Intersection();
+		hit.distance = std::numeric_limits<float>::infinity();
 		for (Primitive* obj : scene) {
 			
 			Intersection temp = intersect(ray, obj);
@@ -116,6 +116,7 @@ public:
 				hit = temp;
 			}
 		}
+		//cout << hit.distance;/////////////////////////////////
 		return hit;
 	}
 };
