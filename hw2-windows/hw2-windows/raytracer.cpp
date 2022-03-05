@@ -15,6 +15,7 @@
 #include <GL/glut.h>
 #include "Transform.h"
 #include <FreeImage.h>
+#include <conio.h>
 
 using namespace std; 
 
@@ -67,46 +68,29 @@ void init() {
 	attenuation = vec3(1.0, 0.0, 0.0);
 	filename = "raytrace.png";
 }
-
+void Clear()
+{
+	system("cls");
+	//clrscr(); // including header file : conio.h
+}
 int main(int argc, char* argv[]) {
-	//vec3 eyeinit(-4.0f, -4.0f, 4.0f); // Initial eye position, also for resets
-	//vec3 center(1.0f, 0.0f, 0.0f);
-	//vec3 upinit(0.0f, 1.0f, 0.0f); // Initial up position, also for resets
-	
-	//float fovy = 90.0f;
-	//width = 800;
-	//height = 600;
-	
-  //glutInit(&argc, argv);
-  //glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-  //glutCreateWindow("HW2: Scene Viewer");
-	
-	
 	
   init();
- 
-  //Sphere* sph = new Sphere(0.0f, 0.0f, -6.0f, 3.0f);
-  //vec3 tri1(-1.0f, 1.0f, -3.0f);
-  //vec3 tri2(1.0f, 1.0f, -3.0f);
-  //vec3 tri3(0.0f, -1.0f, -3.0f);
- //Triangle* tri = new Triangle(tri1, tri2, tri3);
 
   Intersection* intersect = new Intersection();
   readfile(argv[1]);
-	//scene.push_back(tri);
-	//scene.push_back(sph);
-	//cout << width <<  " " << height;
   FreeImage_Initialise();
   FIBITMAP* image = FreeImage_Allocate(width, height, 24);
   //int pix = width * height;
   //BYTE* pixels = new BYTE[3 * pix];
   //FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, width, height, width * 3, 24, 0xFF0000, 0x00FF00, 0x0000FF, false);
 	Camera* cam = new Camera(upinit, center, eyeinit, fovy);
-	cout << fovy;
-	for (int k = 0; k < 3; k++) {
-		cout << eyeinit[k];
-	}
+	int percentage = 0;
 	for (int i = 0; i < height; i++) {
+		Clear(); // clears console terminal
+		percentage = ((float)i / height) * 100; // calculates percentage rendered based on height
+		cout << percentage << "%" << "\n";
+		//percentage += 10;
 		for (int j = 0; j < width; j++) {
 			Ray* ray = cam->generateRay((float)(i + 0.5f), (float)(j + 0.5f));
 			Intersection hit = intersect->findIntersection(*ray, primitives);
@@ -114,10 +98,9 @@ int main(int argc, char* argv[]) {
 			FreeImage_SetPixelColor(image, j, i, &color);
 		}
 	}
-	cout << "bird";
-	FreeImage_Save(FIF_PNG, image, "bla2.png", 0);
+	FreeImage_Save(FIF_PNG, image, "image_test.png", 0);
 	//FreeImage_Save(FIF_PNG, image, filename.c_str(), 0);
-	cout << "poop";
+
   //saveScreenshot(filename);
 
   //glutDisplayFunc(display);

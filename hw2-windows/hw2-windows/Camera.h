@@ -105,6 +105,7 @@ public:
 		}
 		return hit;
 	}
+
 	Intersection findIntersection(Ray ray, vector<Primitive*> scene) {
 		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity(ish)
 		Intersection hit = Intersection();
