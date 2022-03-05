@@ -12,10 +12,6 @@ class Primitive {
 		glm::vec3 v1; // triangle
 		glm::vec3 v2; // triangle
 		glm::vec3 v3; // triangle
-		//glm::vec3 ambient;
-		//glm::vec3 diffuse;
-		//glm::vec3 specular;
-		//glm::vec3 emmision;
 		Primitive() {}
 };
 

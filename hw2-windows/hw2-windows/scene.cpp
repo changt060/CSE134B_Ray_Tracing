@@ -166,15 +166,16 @@ void readfile(const char* filename)
                             attenuation[i] = values[i];
                         }
                     }
-                } else if (cmd == "size") {
-                    validinput = readvals(s,2,values); 
-                    if (validinput) { 
-                        width = (int) values[0]; height = (int) values[1]; 
-                    } 
-                } else if (cmd == "camera") {
-                    validinput = readvals(s,10,values); // 10 values eye cen up fov
+                }
+                else if (cmd == "size") {
+                    validinput = readvals(s, 2, values);
                     if (validinput) {
-
+                        width = (int)values[0]; height = (int)values[1];
+                    }
+                }
+                else if (cmd == "camera") {
+                    validinput = readvals(s, 10, values); // 10 values eye cen up fov
+                    if (validinput) {
                         for (i = 0; i < 3; i++) {
                             eyeinit[i] = values[i];
                             center[i] = values[i + 3];
@@ -183,6 +184,7 @@ void readfile(const char* filename)
                         fovy = values[9];
                         upinit = Transform::upvector(upinit, glm::normalize(eyeinit - center));
                     }
+                }
                     else if (cmd == "size") {
                         validinput = readvals(s, 2, values);
                         if (validinput) {
@@ -248,7 +250,7 @@ void readfile(const char* filename)
                             // optional
                         }
                     }
-                }
+                
 
                 // I've left the code for loading objects in the skeleton, so 
                 // you can get a sense of how this works.  

@@ -33,6 +33,7 @@ public:
 	Intersection() {
 		this->distance = std::numeric_limits<float>::infinity();
 	}
+
 	Intersection intersect(Ray ray, Primitive* obj) {
 		Intersection hit = Intersection();
 		hit.primitive = obj; // setting the intersection to point to the object
@@ -78,6 +79,7 @@ public:
 				//std::cout << hit.distance;
 				return hit;
 			}
+
 			float dee = sqrt((b * b) - (4.0f * a * c));
 			float root1 = (-b - dee) / (2.0f * a);
 			float root2 = (-b + dee) / (2.0f * a);
@@ -137,14 +139,15 @@ public:
 	Ray* generateRay(float i, float j) {
 
 		vec3 w = normalize(lookfrom - lookat); // c = normalize(eye - center)
-		vec3 b = normalize(upvector);
-		vec3 u = normalize(cross(b, w));
+		//vec3 b = normalize(upvector);
+		vec3 u = normalize(cross(upvector, w));
 		vec3 v = cross(w, u);
 
 		float theta = (fovy * pie / 180.0) / 2; // in radians
-		float alpha = (float)(width / height) * tan(theta) * (j - (width / 2.0f)) / (width / 2.0f);
+		float alpha = ((float)width / (float)height) * tan(theta) * (j - (width / 2.0f)) / (width / 2.0f);
 		float beta = tan(theta) * (i - (height / 2.0f)) / (height / 2.0f);
 		vec3 direction = normalize(alpha * u + beta * v - w);
+
 		Ray* ray = new Ray(lookfrom, direction);
 		return ray;
 	}
