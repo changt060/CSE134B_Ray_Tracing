@@ -250,7 +250,6 @@ void readfile(const char* filename)
                             // optional
                         }
                     }
-                
 
                 // I've left the code for loading objects in the skeleton, so 
                 // you can get a sense of how this works.  
