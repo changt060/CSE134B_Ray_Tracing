@@ -55,10 +55,10 @@ RGBQUAD findColor(Intersection hit) { // findColor for dummies
 	}
 	else { // intersection
 		if (hit.primitive->type == 0) {
-			return red;
+			return blue;
 		}
 		else {
-			return blue;
+			return red;
 		}
 	}
 }
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
 			FreeImage_SetPixelColor(image, j, i, &color);
 		}
 	}
-	FreeImage_Save(FIF_PNG, image, "image_test.png", 0);
+	FreeImage_Save(FIF_PNG, image, "sc1-cam4.png", 0);
 	//FreeImage_Save(FIF_PNG, image, filename.c_str(), 0);
 
   //saveScreenshot(filename);
