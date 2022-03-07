@@ -17,7 +17,7 @@ browse tab, then hit Install.
 
 (1) Elysia Chang, Daniel Lewandowski
 
-(2) tichang@ucsd.edu
+(2) dlewandowski@ucsd.edu
 
 (3) Documentation of result images:
 scene1.test

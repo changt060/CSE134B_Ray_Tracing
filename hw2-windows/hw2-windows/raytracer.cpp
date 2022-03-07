@@ -1,4 +1,4 @@
-/******************************************************************************/
+﻿/******************************************************************************/
 /* This is the program skeleton for homework 2 in CSE167 by Ravi Ramamoorthi  */
 /* Extends HW 1 to deal with shading, more transforms and multiple objects    */
 /******************************************************************************/
@@ -87,8 +87,16 @@ int main(int argc, char* argv[]) {
 	Camera* cam = new Camera(upinit, center, eyeinit, fovy);
 	int percentage = 0;
 	for (int i = 0; i < height; i++) {
-		Clear(); // clears console terminal
 		percentage = ((float)i / height) * 100; // calculates percentage rendered based on height
+		
+		cout << "[";
+		for (int g = 0; g < floor(percentage/10); g++) {
+			cout << "|";
+		}
+		for (int g = 0; g < floor(100 - percentage)/10; g++) {
+			cout << ".";
+		}
+		cout << "]";
 		cout << percentage << "%" << "\n";
 		//percentage += 10;
 		for (int j = 0; j < width; j++) {
@@ -97,6 +105,7 @@ int main(int argc, char* argv[]) {
 			RGBQUAD color = findColor(hit);
 			FreeImage_SetPixelColor(image, j, i, &color);
 		}
+		Clear(); // clears console terminal
 	}
 	FreeImage_Save(FIF_PNG, image, "sc1-cam4.png", 0);
 	//FreeImage_Save(FIF_PNG, image, filename.c_str(), 0);
