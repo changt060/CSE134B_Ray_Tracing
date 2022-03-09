@@ -53,6 +53,7 @@ EXTERN float shininess;
 EXTERN vec3 attenuation;
 EXTERN vector<vec3> lightpos;
 EXTERN vector<vec3> lightcol;
+EXTERN vector<bool> lgtType;
 EXTERN string filename;
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN mat4 projection, modelview; // The mvp matrices

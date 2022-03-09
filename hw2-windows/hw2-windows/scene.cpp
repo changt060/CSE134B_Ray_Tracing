@@ -149,17 +149,30 @@ void readfile(const char* filename)
                     if (validinput) {
                         shininess = values[0]; 
                     }
-                } else if (cmd == "directional" || cmd == "point") {
+                } else if (cmd == "directional") {
                     validinput = readvals(s, 6, values);
                     if (validinput) {
                         vec3 curLightPos(values[0], values[1], values[2]);
                         lightpos.push_back(curLightPos);
                         vec3 curLightColor(values[3], values[4], values[5]);
                         lightcol.push_back(curLightColor);
-
+                        lgtType.push_back(0);
                         // Need to transform light position before displaying//////////////////////////////////////////
                     }
-                } else if (cmd == "attenuation") {
+                }
+                else if (cmd == "point") {
+                    validinput = readvals(s, 6, values);
+                    if (validinput) {
+                        vec3 curLightPos(values[0], values[1], values[2]);
+                        lightpos.push_back(curLightPos);
+                        vec3 curLightColor(values[3], values[4], values[5]);
+                        lightcol.push_back(curLightColor);
+                        lgtType.push_back(1);
+                        // Need to transform light position before displaying//////////////////////////////////////////
+                    }
+
+                }
+                else if (cmd == "attenuation") {
                     validinput = readvals(s, 3, values);
                     if (validinput) {
                         for (i = 0; i < 3; i++) {
