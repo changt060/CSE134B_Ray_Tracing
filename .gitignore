@@ -409,3 +409,11 @@ hw2-windows/hw2-windows/Debug/hw2-windows.log
 hw2-windows/hw2-windows/Debug/hw2-windows.ilk
 hw2-windows/.vs/hw2-windows/v17/ipch/AutoPCH/258dee3f603b6ea5/SAMPLER.ipch
 hw2-windows/.vs/hw2-windows/v17/ipch/AutoPCH/179223aefa0f0348/RAYTRACER.ipch
+hw2-windows/.vs/hw2-windows/v17/ipch/AutoPCH/179223aefa0f0348/RAYTRACER.ipch
+hw2-windows/.vs/hw2-windows/v17/ipch/AutoPCH/258dee3f603b6ea5/SAMPLER.ipch
+hw2-windows/hw2-windows/Debug/hw2-windows.ilk
+hw2-windows/hw2-windows/Debug/hw2-windows.log
+*.tlog
+*.obj
+*.idb
+*.pdb
