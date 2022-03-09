@@ -202,6 +202,7 @@ void readfile(const char* filename)
                         validinput = readvals(s, 4, values);
                         if (validinput) {
                             Primitive * sphere = new Sphere(values[0], values[1], values[2], values[3]);
+                            sphere->transform = transfstack.top();
                             sphere->ambient = ambient;
                             sphere->diffuse = diffuse;
                             sphere->specular = specular;
@@ -294,7 +295,6 @@ void readfile(const char* filename)
                 else if (cmd == "translate") {
                     validinput = readvals(s,3,values); 
                     if (validinput) {
-
                         mat4 trM = Transform::translate(values[0], values[1], values[2]);
                         rightmultiply(trM, transfstack);
                     }

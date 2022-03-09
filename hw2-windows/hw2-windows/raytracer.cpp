@@ -42,15 +42,15 @@ void saveScreenshot(string fname) {
   FreeImage_Save(FIF_PNG, img, fname.c_str(), 0);
   delete pixels;
 }
-vec4 ComputeLight(vec3 direction, vec4 lightcolor, vec3 normal, vec3 halfvec, vec4 mydiffuse,vec4 myspecular,float myshininess) {
+vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, vec3 mydiffuse,vec3 myspecular,float myshininess) {
 
 	float nDotL = dot(normal, direction);
-	vec4 lambert = mydiffuse * lightcolor * std::max(nDotL, 0.0f);
+	vec3 lambert = mydiffuse * lightcolor * std::max(nDotL, 0.0f);
 
 	float nDotH = dot(normal, halfvec);
-	vec4 phong = myspecular * lightcolor * pow(std::max(nDotH, 0.0f), myshininess);
+	vec3 phong = myspecular * lightcolor * pow(std::max(nDotH, 0.0f), myshininess);
 
-	vec4 retval = lambert + phong;
+	vec3 retval = lambert + phong;
 	return retval;
 }
 
@@ -69,13 +69,39 @@ RGBQUAD findColor(Intersection hit) { // findColor for dummies
 		if (hit.primitive->type == 0) {
 			vec3 norm = normalize(hit.position - hit.primitive->center);
 			//cout << hit.position[0] << ", " << hit.position[1] << ", " << hit.position[2] << "\n";
-			vec3 color = norm;
-			//color += vec3(norm[0], norm[1], norm[3]);
+			vec3 finalcolor;
+			vec3 eyepos = eyeinit;
+			//vec4 myvertexCalc = modelview * myvertex;
+			vec3 mypos = hit.position;
+			vec3 eyedirn = normalize(eyepos - mypos);
+
+			// Compute normal, needed for shading. 
+			vec3 normal = mat3(transpose(inverse(modelview))) * norm;
+			normal = normalize(normal);
+
+
+			finalcolor = hit.primitive->ambient + hit.primitive->emission;
+			// Add up all the lights
 			for (int i = 0; i < lightpos.size(); i++) {
+				vec3 direction;
+				vec3 lightposn = vec3(lightpos[i][0],lightpos[i][1],lightpos[i][2]);
+				if (attenuation[0] == 1) { // directional light
+					direction = normalize(lightposn);
+				}
+				else {
+					//ec3 position = lightpos[i] / lightposn[i].w;
+					direction = normalize(lightpos[i]-mypos); // no attenuation
+				}
+				vec3 halfAng = normalize(direction + eyedirn);
+				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess);
+				finalcolor = finalcolor + curCol;
+			}
+			//color += vec3(norm[0], norm[1], norm[3]);
+			//for (int i = 0; i < lightpos.size(); i++) {
 				//color += hit.primitive->diffuse;
 				//color += hit.primitive->specular;
-			}
-			RGBQUAD finalcol = { abs(color[2]*255.0f), 0, 0, 0 };
+			//}
+			RGBQUAD finalcol = { finalcolor[2]*255.0f, finalcolor[1] * 255.0f, finalcolor[0] * 255.0f, 0 };
 				//color += hit.primitive.am
 				//for each light in the scene :
 				//	color += kd term
@@ -98,10 +124,20 @@ void Clear()
 	system("cls");
 	//clrscr(); // including header file : conio.h
 }
+void progressBar(float percentage) {
+	cout << "[";
+	for (int g = 0; g < floor(percentage / 10); g++) {
+		cout << "|";
+	}
+	for (int g = 0; g < floor(100 - percentage) / 10; g++) {
+		cout << ".";
+	}
+	cout << "]";
+	cout << percentage << "%" << "\n";
+}
 int main(int argc, char* argv[]) {
-	
-  init();
 
+  init();
   Intersection* intersect = new Intersection();
   readfile(argv[1]);
   FreeImage_Initialise();
@@ -110,23 +146,15 @@ int main(int argc, char* argv[]) {
   //BYTE* pixels = new BYTE[3 * pix];
   //FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, width, height, width * 3, 24, 0xFF0000, 0x00FF00, 0x0000FF, false);
 	Camera* cam = new Camera(upinit, center, eyeinit, fovy);
+	modelview = Transform::lookAt(eyeinit, center, upinit);
+	mat4 transf = modelview;
 	int percentage = 0;
 	for (int i = 0; i < height; i++) {
 		percentage = ((float)i / height) * 100; // calculates percentage rendered based on height
-		
-		cout << "[";
-		for (int g = 0; g < floor(percentage/10); g++) {
-			cout << "|";
-		}
-		for (int g = 0; g < floor(100 - percentage)/10; g++) {
-			cout << ".";
-		}
-		cout << "]";
-		cout << percentage << "%" << "\n";
-		//percentage += 10;
+		progressBar(percentage);
 		for (int j = 0; j < width; j++) {
 			Ray* ray = cam->generateRay((float)(i + 0.5f), (float)(j + 0.5f));
-			Intersection hit = intersect->findIntersection(*ray, primitives);
+			Intersection hit = intersect->findIntersection(*ray, primitives, transf);
 			RGBQUAD color = findColor(hit);
 			FreeImage_SetPixelColor(image, j, i, &color);
 		}

@@ -95,9 +95,9 @@ public:
 			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
 				hit.distance = t0;
 				hit.position = ray.pos + t0 * ray.dir;
-				//std::cout << hit.distance;
+				//std::cout << hit.distance; 
 			}
-			else if (t0 < 0 && t1 > 0) {
+			else if (t0 < 0 && t1 > 0) { 
 				hit.distance = t1;
 				hit.position = ray.pos + t1 * ray.dir;
 				
@@ -109,12 +109,12 @@ public:
 		return hit;
 	}
 
-	Intersection findIntersection(Ray ray, vector<Primitive*> scene) {
+	Intersection findIntersection(Ray ray, vector<Primitive*> scene, mat4 transf) {
 		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity(ish)
 		Intersection hit = Intersection();
 		hit.distance = std::numeric_limits<float>::infinity();
 		for (Primitive* obj : scene) {
-			
+			modelview = transf * obj->transform;
 			Intersection temp = intersect(ray, obj);
 			if (temp.distance < min_distance) {
 				//std::cout << obj->type;

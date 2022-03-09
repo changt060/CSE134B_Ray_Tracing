@@ -10,6 +10,7 @@ class Primitive {
 		vec3 diffuse;
 		vec3 specular;
 		vec3 emission;
+		mat4 transform;
 		float shininess;
 		int type;
 		glm::vec3 center; //sphere
