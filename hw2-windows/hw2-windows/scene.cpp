@@ -134,7 +134,7 @@ void readfile(const char* filename)
                     validinput = readvals(s, 3, values);
                     if (validinput) {
                         for (i = 0; i < 3; i++) {
-                            specular[i] = values[i]; 
+                            specular[i] = values[i];
                         }
                     }
                 } else if (cmd == "emission") {
@@ -202,7 +202,13 @@ void readfile(const char* filename)
                         validinput = readvals(s, 4, values);
                         if (validinput) {
                             Primitive * sphere = new Sphere(values[0], values[1], values[2], values[3]);
+                            sphere->ambient = ambient;
+                            sphere->diffuse = diffuse;
+                            sphere->specular = specular;
+                            sphere->shininess = shininess;
+                            sphere->emission = emission;
                             primitives.push_back(sphere);
+
                             // Need to set object's light properties///////////////////////////////////
                             // Need to set object's transform/////////////////////////////////////
                         }
@@ -239,6 +245,11 @@ void readfile(const char* filename)
                             vec3 v2 = vertices[values[1]];
                             vec3 v3 = vertices[values[2]];
                             Primitive* triangle = new Triangle(v1, v2, v3);
+                            triangle->ambient = ambient;
+                            triangle->diffuse = diffuse;
+                            triangle->specular = specular;
+                            triangle->shininess = shininess;
+                            triangle->emission = emission;
                             primitives.push_back(triangle);
                             // Need to set object's light properties///////////////////////////////////
                             // Need to set object's transform/////////////////////////////////////

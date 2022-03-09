@@ -6,6 +6,11 @@
 
 class Primitive {
 	public:
+		vec3 ambient;
+		vec3 diffuse;
+		vec3 specular;
+		vec3 emission;
+		float shininess;
 		int type;
 		glm::vec3 center; //sphere
 		float radius; // sphere
@@ -17,7 +22,10 @@ class Primitive {
 
 class Sphere : public Primitive {
 	public:
+
+		double shininess;
 		Sphere(float x, float y, float z, float radius) {
+
 			this->center = glm::vec3(x, y, z);
 			this->radius = radius;
 			this->type = 0;

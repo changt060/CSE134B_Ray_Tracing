@@ -16,6 +16,7 @@
 #include "Transform.h"
 #include <FreeImage.h>
 #include <conio.h>
+#include <algorithm> 
 
 using namespace std; 
 
@@ -41,6 +42,17 @@ void saveScreenshot(string fname) {
   FreeImage_Save(FIF_PNG, img, fname.c_str(), 0);
   delete pixels;
 }
+vec4 ComputeLight(vec3 direction, vec4 lightcolor, vec3 normal, vec3 halfvec, vec4 mydiffuse,vec4 myspecular,float myshininess) {
+
+	float nDotL = dot(normal, direction);
+	vec4 lambert = mydiffuse * lightcolor * std::max(nDotL, 0.0f);
+
+	float nDotH = dot(normal, halfvec);
+	vec4 phong = myspecular * lightcolor * pow(std::max(nDotH, 0.0f), myshininess);
+
+	vec4 retval = lambert + phong;
+	return retval;
+}
 
 RGBQUAD findColor(Intersection hit) { // findColor for dummies
 	//cout << 1000000 << "\n";
@@ -55,7 +67,20 @@ RGBQUAD findColor(Intersection hit) { // findColor for dummies
 	}
 	else { // intersection
 		if (hit.primitive->type == 0) {
-			return blue;
+			vec3 norm = normalize(hit.position - hit.primitive->center);
+			//cout << hit.position[0] << ", " << hit.position[1] << ", " << hit.position[2] << "\n";
+			vec3 color = norm;
+			//color += vec3(norm[0], norm[1], norm[3]);
+			for (int i = 0; i < lightpos.size(); i++) {
+				//color += hit.primitive->diffuse;
+				//color += hit.primitive->specular;
+			}
+			RGBQUAD finalcol = { abs(color[2]*255.0f), 0, 0, 0 };
+				//color += hit.primitive.am
+				//for each light in the scene :
+				//	color += kd term
+				//	color += ks term
+			return finalcol;
 		}
 		else {
 			return red;
@@ -107,7 +132,7 @@ int main(int argc, char* argv[]) {
 		}
 		Clear(); // clears console terminal
 	}
-	FreeImage_Save(FIF_PNG, image, "sc1-cam4.png", 0);
+	FreeImage_Save(FIF_PNG, image, "sc1.png", 0);
 	//FreeImage_Save(FIF_PNG, image, filename.c_str(), 0);
 
   //saveScreenshot(filename);

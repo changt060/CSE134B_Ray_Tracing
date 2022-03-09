@@ -63,6 +63,7 @@ public:
 			if (a >= 0 && b >= 0 && c >= 0) {
 				hit.distance = t;
 				hit.normal = n;
+				hit.position = pointOfIntersection;
 			}
 		} else if (obj->type == 0) {
 			// Sphere
@@ -93,10 +94,12 @@ public:
 			// TODO NEED TO GET NORMAL/////////////////////////////////////////////
 			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
 				hit.distance = t0;
+				hit.position = ray.pos + t0 * ray.dir;
 				//std::cout << hit.distance;
 			}
 			else if (t0 < 0 && t1 > 0) {
 				hit.distance = t1;
+				hit.position = ray.pos + t1 * ray.dir;
 				
 			}
 			/*else if (t0 < 0 && t1 < 0) { // no intersection
