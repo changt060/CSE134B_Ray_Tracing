@@ -47,6 +47,7 @@ public:
 			vec3 AC = C - A;
 			vec3 AB = B - A;
 			vec3 n = normalize(cross(AB, AC));
+			
 			float t = (dot(A, n) - dot(ray.pos, n)) / dot(ray.dir, n);
 			if (t < 0) { // no intersection
 				hit.distance = std::numeric_limits<float>::infinity();
@@ -63,8 +64,10 @@ public:
 			if (a >= 0 && b >= 0 && c >= 0) {
 				hit.distance = t;
 				hit.normal = n;
+				
 				hit.position = pointOfIntersection;
 			}
+			
 		} else if (obj->type == 0) {
 			// Sphere
 			vec3 e = ray.pos;
@@ -72,6 +75,7 @@ public:
 			vec3 d = ray.dir;
 			//std::cout <<"pos: " << ray.pos[0] << ray.pos[1] << ray.pos[2] << "\n";
 			//std::cout << "dir: " << ray.dir[0] << ray.dir[1] << ray.dir[2] << "\n";
+			
 			
 			float a = dot(d, d); // basically = 1
 			float b = dot(2.0f * d, (e - ctr));
@@ -102,6 +106,9 @@ public:
 				hit.position = ray.pos + t1 * ray.dir;
 				
 			}
+			vec3 norm = normalize(hit.position - hit.primitive->center);
+			vec3 normal = mat3(transpose(inverse(modelview))) * norm;
+			hit.normal = normalize(normal);
 			/*else if (t0 < 0 && t1 < 0) { // no intersection
 				hit.distance = std::numeric_limits<float>::infinity();
 			}*/

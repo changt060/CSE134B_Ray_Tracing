@@ -70,12 +70,10 @@ void readfile(const char* filename)
     ifstream in;
     in.open(filename); 
     if (in.is_open()) {
-
         // I need to implement a matrix stack to store transforms.  
         // This is done using standard STL Templates 
         stack <mat4> transfstack; 
         transfstack.push(mat4(1.0));  // identity
-
         getline (in, str); 
         while (in) {
             if ((str.find_first_not_of(" \t\r\n") != string::npos) && (str[0] != '#')) {

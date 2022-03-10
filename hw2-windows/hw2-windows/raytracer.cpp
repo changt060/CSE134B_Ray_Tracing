@@ -67,23 +67,24 @@ RGBQUAD findColor(Intersection hit) {
 	}
 	// intersection
 	else { 
-		// Lighting for a sphere
-		if (hit.primitive->type == 0) { 
-			vec3 norm = normalize(hit.position - hit.primitive->center);
+		// Lighting 
+			vec3 normal = hit.normal;
 			vec3 finalcolor;
 			vec3 eyepos = eyeinit;
 			vec3 mypos = hit.position;
 			vec3 eyedirn = normalize(eyepos - mypos);
-			vec3 normal = mat3(transpose(inverse(modelview))) * norm;
-			normal = normalize(normal);
 			
-			finalcolor =  hit.primitive->emission;
+
+			finalcolor = hit.primitive->ambient + hit.primitive->emission;
 
 			// Add up all the lights
 			for (int i = 0; i < lightpos.size(); i++) {
+
 				vec3 direction;
-				vec3 lightposn = vec3(lightpos[i][0],lightpos[i][1],lightpos[i][2]);
+				vec4 lightposnt = modelview * vec4(lightpos[i][0],lightpos[i][1],lightpos[i][2], 1);
+				vec3 lightposn = vec3(lightposnt[0], lightposnt[1], lightposnt[2]);
 				// directional light
+
 				if (lgtType[i] == 0) { 
 					direction = normalize(lightposn);
 				}
@@ -94,18 +95,17 @@ RGBQUAD findColor(Intersection hit) {
 				//cout << lightcol[i][0] << "," << lightcol[i][1] << "," << lightcol[i][2] << "\n";
 				vec3 halfAng = normalize(direction + eyedirn);
 				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess);
-				finalcolor = finalcolor + curCol; // TODO add ambient somehow
-
+				finalcolor = finalcolor + curCol; 
+				if (finalcolor[0] > 1.0f) {
+					finalcolor[0] = floor(finalcolor[0]);
+				}
 			}
 			RGBQUAD finalcol = { finalcolor[2]*255.0f, finalcolor[1] * 255.0f, finalcolor[0] * 255.0f, 0 };
 			return finalcol;
-		}
-		else {
-			//TODO light for triangle
-			return red;
+		
 		}
 	}
-}
+
 
 void init() {
 	maxdepth = 5;
