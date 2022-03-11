@@ -38,6 +38,9 @@ public:
 		Intersection hit = Intersection();
 		hit.primitive = obj; // setting the intersection to point to the object
 		if (obj->type == 3) {
+			mat4 inverseTransform = inverse(obj->transform);
+			ray.pos = vec3(inverseTransform * vec4(ray.pos, 1.0f));
+			ray.dir = vec3(inverseTransform * vec4(ray.dir, 0.0f));
 			// Triangle
 			vec3 A = obj->v1;
 			vec3 B = obj->v2;
@@ -64,18 +67,22 @@ public:
 			if (a >= 0 && b >= 0 && c >= 0) {
 				hit.distance = t;
 				hit.normal = n;
-				
 				hit.position = pointOfIntersection;
+				hit.position = vec3(obj->transform * vec4(hit.position, 1.0f));
+				vec3 normal = mat3(transpose(inverseTransform)) * n;
+				hit.normal = normalize(normal);
 			}
 			
 		} else if (obj->type == 0) {
 			// Sphere
+			mat4 inverseTransform = inverse(obj->transform);
+			ray.pos = vec3(inverseTransform * vec4(ray.pos, 1.0f));
+			ray.dir = vec3(inverseTransform * vec4(ray.dir, 0.0f));
 			vec3 e = ray.pos;
 			vec3 ctr = obj->center;
 			vec3 d = ray.dir;
 			//std::cout <<"pos: " << ray.pos[0] << ray.pos[1] << ray.pos[2] << "\n";
 			//std::cout << "dir: " << ray.dir[0] << ray.dir[1] << ray.dir[2] << "\n";
-			
 			
 			float a = dot(d, d); // basically = 1
 			float b = dot(2.0f * d, (e - ctr));
@@ -95,7 +102,6 @@ public:
 				t0 = root2;
 				t1 = root1;
 			}
-			// TODO NEED TO GET NORMAL/////////////////////////////////////////////
 			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
 				hit.distance = t0;
 				hit.position = ray.pos + t0 * ray.dir;
@@ -106,12 +112,10 @@ public:
 				hit.position = ray.pos + t1 * ray.dir;
 				
 			}
-			vec3 norm = normalize(hit.position - hit.primitive->center);
-			vec3 normal = mat3(transpose(inverse(modelview))) * norm;
+			hit.position = vec3(obj->transform * vec4(hit.position, 1.0f));
+			vec3 n = normalize(hit.position - hit.primitive->center);
+			vec3 normal = mat3(transpose(inverseTransform)) * n;
 			hit.normal = normalize(normal);
-			/*else if (t0 < 0 && t1 < 0) { // no intersection
-				hit.distance = std::numeric_limits<float>::infinity();
-			}*/
 		}
 		return hit;
 	}
@@ -124,7 +128,6 @@ public:
 			modelview = transf * obj->transform;
 			Intersection temp = intersect(ray, obj);
 			if (temp.distance < min_distance) {
-				//std::cout << obj->type;
 				min_distance = temp.distance;
 				hit = temp;
 			}

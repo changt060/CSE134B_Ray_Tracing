@@ -29,7 +29,7 @@ using namespace std;
 
 
 
-void saveScreenshot(string fname) {
+/*void saveScreenshot(string fname) {
   int pix = width * height;
   BYTE *pixels = new BYTE[3*pix];
   glReadBuffer(GL_FRONT);
@@ -41,8 +41,8 @@ void saveScreenshot(string fname) {
 
   FreeImage_Save(FIF_PNG, img, fname.c_str(), 0);
   delete pixels;
-}
-vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, vec3 mydiffuse,vec3 myspecular,float myshininess) {
+}*/
+vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, vec3 mydiffuse,vec3 myspecular,float myshininess, bool lgttype, float r) {
 
 	float nDotL = dot(normal, direction);
 	vec3 lambert = mydiffuse * lightcolor * std::max(nDotL, 0.0f);
@@ -51,6 +51,10 @@ vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, ve
 	vec3 phong = myspecular * lightcolor * pow(std::max(nDotH, 0.0f), myshininess);
 
 	vec3 retval = lambert + phong;
+
+	if (lgttype == 1) { // Calculate attenuation for point light
+		//retval = retval / (r * r); TODO UNCOMMENT//////////////////////////////
+	}
 	return retval;
 }
 
@@ -74,31 +78,35 @@ RGBQUAD findColor(Intersection hit) {
 			vec3 mypos = hit.position;
 			vec3 eyedirn = normalize(eyepos - mypos);
 			
-
 			finalcolor = hit.primitive->ambient + hit.primitive->emission;
 
 			// Add up all the lights
 			for (int i = 0; i < lightpos.size(); i++) {
 
+				float r = 1;
 				vec3 direction;
-				vec4 lightposnt = modelview * vec4(lightpos[i][0],lightpos[i][1],lightpos[i][2], 1);
-				vec3 lightposn = vec3(lightposnt[0], lightposnt[1], lightposnt[2]);
 				// directional light
-
 				if (lgtType[i] == 0) { 
-					direction = normalize(lightposn);
+					direction = normalize(lightpos[i]);
 				}
 				// point light
 				else { 
-					direction = normalize(lightpos[i]-mypos); // no attenuation
+					direction = normalize(lightpos[i]-mypos);
+					r = distance(hit.position, lightpos[i]);
 				}
 				//cout << lightcol[i][0] << "," << lightcol[i][1] << "," << lightcol[i][2] << "\n";
 				vec3 halfAng = normalize(direction + eyedirn);
-				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess);
+				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess, lgtType[i], r);
 				finalcolor = finalcolor + curCol; 
-				if (finalcolor[0] > 1.0f) {
+				/*if (finalcolor[0] > 1.0f) {
 					finalcolor[0] = floor(finalcolor[0]);
 				}
+				if (finalcolor[1] > 1.0f) {
+					finalcolor[1] = floor(finalcolor[1]);
+				}
+				if (finalcolor[2] > 1.0f) {
+					finalcolor[2] = floor(finalcolor[2]);
+				}*/
 			}
 			RGBQUAD finalcol = { finalcolor[2]*255.0f, finalcolor[1] * 255.0f, finalcolor[0] * 255.0f, 0 };
 			return finalcol;
@@ -109,8 +117,8 @@ RGBQUAD findColor(Intersection hit) {
 
 void init() {
 	maxdepth = 5;
-	attenuation = vec3(1.0, 0.0, 0.0);
-	filename = "raytrace.png";
+	attenuation = vec3(1.0, 0.0, 0.0); // only for point lights
+	filename = "sc1.png";
 }
 void Clear() // clears the console
 {
@@ -138,7 +146,7 @@ int main(int argc, char* argv[]) {
 	mat4 transf = modelview;
 	int percentage = 0;
 	for (int i = 0; i < height; i++) {
-		if (i % 20 == 0) { // updates progress bar once every 20 height pixels
+		if (i % 60 == 0) { // updates progress bar once every 20 height pixels
 			percentage = ((float)i / height) * 100; // calculates percentage rendered based on height
 			Clear();
 			progressBar(percentage); 
@@ -150,7 +158,7 @@ int main(int argc, char* argv[]) {
 			FreeImage_SetPixelColor(image, j, i, &color);
 		}
 	}
-	FreeImage_Save(FIF_PNG, image, "sc1.png", 0);
+	FreeImage_Save(FIF_PNG, image, filename.c_str(), 0);
 	FreeImage_DeInitialise();
 	return 0;
 }

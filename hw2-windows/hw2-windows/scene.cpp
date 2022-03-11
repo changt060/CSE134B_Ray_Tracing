@@ -151,22 +151,22 @@ void readfile(const char* filename)
                     validinput = readvals(s, 6, values);
                     if (validinput) {
                         vec3 curLightPos(values[0], values[1], values[2]);
+                        curLightPos = vec3(transfstack.top() * vec4(curLightPos, 0.0f)); // Need to transform light position before displaying
                         lightpos.push_back(curLightPos);
                         vec3 curLightColor(values[3], values[4], values[5]);
                         lightcol.push_back(curLightColor);
                         lgtType.push_back(0);
-                        // Need to transform light position before displaying//////////////////////////////////////////
                     }
                 }
                 else if (cmd == "point") {
                     validinput = readvals(s, 6, values);
                     if (validinput) {
                         vec3 curLightPos(values[0], values[1], values[2]);
+                        curLightPos = vec3(transfstack.top() * vec4(curLightPos, 1.0f)); // Need to transform light position before displaying
                         lightpos.push_back(curLightPos);
                         vec3 curLightColor(values[3], values[4], values[5]);
                         lightcol.push_back(curLightColor);
                         lgtType.push_back(1);
-                        // Need to transform light position before displaying//////////////////////////////////////////
                     }
 
                 }
@@ -213,16 +213,14 @@ void readfile(const char* filename)
                         validinput = readvals(s, 4, values);
                         if (validinput) {
                             Primitive * sphere = new Sphere(values[0], values[1], values[2], values[3]);
-                            sphere->transform = transfstack.top();
+                            sphere->transform = transfstack.top(); // Need to set object's transform
+                            // Need to set object's light properties
                             sphere->ambient = ambient;
                             sphere->diffuse = diffuse;
                             sphere->specular = specular;
                             sphere->shininess = shininess;
                             sphere->emission = emission;
                             primitives.push_back(sphere);
-
-                            // Need to set object's light properties///////////////////////////////////
-                            // Need to set object's transform/////////////////////////////////////
                         }
                     }
                     else if (cmd == "maxverts") {
@@ -257,14 +255,14 @@ void readfile(const char* filename)
                             vec3 v2 = vertices[values[1]];
                             vec3 v3 = vertices[values[2]];
                             Primitive* triangle = new Triangle(v1, v2, v3);
+                            triangle->transform = transfstack.top(); // Need to set object's transform
+                            // Need to set object's light properties
                             triangle->ambient = ambient;
                             triangle->diffuse = diffuse;
                             triangle->specular = specular;
                             triangle->shininess = shininess;
                             triangle->emission = emission;
                             primitives.push_back(triangle);
-                            // Need to set object's light properties///////////////////////////////////
-                            // Need to set object's transform/////////////////////////////////////
                         }
                     }
                     else if (cmd == "trinormal") {
