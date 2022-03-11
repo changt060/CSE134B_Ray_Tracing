@@ -37,10 +37,10 @@ public:
 	Intersection intersect(Ray ray, Primitive* obj) {
 		Intersection hit = Intersection();
 		hit.primitive = obj; // setting the intersection to point to the object
+		mat4 inverseTransform = obj->inverseT;
+		ray.pos = vec3(inverseTransform * vec4(ray.pos, 1.0f));
+		ray.dir = vec3(inverseTransform * vec4(ray.dir, 0.0f));
 		if (obj->type == 3) {
-			mat4 inverseTransform = inverse(obj->transform);
-			ray.pos = vec3(inverseTransform * vec4(ray.pos, 1.0f));
-			ray.dir = vec3(inverseTransform * vec4(ray.dir, 0.0f));
 			// Triangle
 			vec3 A = obj->v1;
 			vec3 B = obj->v2;
@@ -56,6 +56,7 @@ public:
 				hit.distance = std::numeric_limits<float>::infinity();
 				return hit;
 			}
+			
 			/* Using algorithm from UCSD Online Discussion board by ravir11 */
 			vec3 pointOfIntersection = ray.pos + t * ray.dir;
 			vec3 ApNormal = (cross(n, BC)) / (dot(cross(n, BC), CA));
@@ -65,6 +66,7 @@ public:
 			float b = dot(BpNormal, pointOfIntersection) - dot(BpNormal, A);
 			float c = dot(CpNormal, pointOfIntersection) - dot(CpNormal, B);
 			if (a >= 0 && b >= 0 && c >= 0) {
+				
 				hit.distance = t;
 				hit.normal = n;
 				hit.position = pointOfIntersection;
@@ -75,9 +77,6 @@ public:
 			
 		} else if (obj->type == 0) {
 			// Sphere
-			mat4 inverseTransform = inverse(obj->transform);
-			ray.pos = vec3(inverseTransform * vec4(ray.pos, 1.0f));
-			ray.dir = vec3(inverseTransform * vec4(ray.dir, 0.0f));
 			vec3 e = ray.pos;
 			vec3 ctr = obj->center;
 			vec3 d = ray.dir;
@@ -99,15 +98,18 @@ public:
 			float t1 = root2;
 			//std::cout << "t0: " << t0 << "\n" << "t1: " << t1 << "\n";
 			if (root2 == std::min(root1, root2)) { // ensuring that t0 is smaller
+				
 				t0 = root2;
 				t1 = root1;
 			}
 			if (t0 > 0 && t1 > 0) { // covers the t0 = t1 case
+				
 				hit.distance = t0;
 				hit.position = ray.pos + t0 * ray.dir;
 				//std::cout << hit.distance; 
 			}
 			else if (t0 < 0 && t1 > 0) { 
+				
 				hit.distance = t1;
 				hit.position = ray.pos + t1 * ray.dir;
 				
@@ -121,18 +123,16 @@ public:
 	}
 
 	Intersection findIntersection(Ray ray, vector<Primitive*> scene, mat4 transf) {
-		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity(ish)
+		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity
 		Intersection hit = Intersection();
 		hit.distance = std::numeric_limits<float>::infinity();
 		for (Primitive* obj : scene) {
-			modelview = transf * obj->transform;
 			Intersection temp = intersect(ray, obj);
 			if (temp.distance < min_distance) {
 				min_distance = temp.distance;
 				hit = temp;
 			}
 		}
-		//cout << hit.distance;/////////////////////////////////
 		return hit;
 	}
 };

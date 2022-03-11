@@ -17,7 +17,8 @@
 #include <FreeImage.h>
 #include <conio.h>
 #include <algorithm> 
-
+#include <time.h> 
+#include <chrono>
 using namespace std; 
 
 // Main variables in the program.  
@@ -124,7 +125,7 @@ void Clear() // clears the console
 {
 	system("cls");
 }
-void progressBar(float percentage) {
+void progressBar(float percentage, float remaining) {
 	cout << "[";
 	for (int g = 0; g < floor(percentage / 10); g++) {
 		cout << "|";
@@ -133,7 +134,7 @@ void progressBar(float percentage) {
 		cout << ".";
 	}
 	cout << "]";
-	cout << percentage << "%" << "\n";
+	cout << percentage << "%\n" << "time remaining: " << remaining << " s \n";
 }
 int main(int argc, char* argv[]) {
   init();
@@ -145,11 +146,22 @@ int main(int argc, char* argv[]) {
 	modelview = Transform::lookAt(eyeinit, center, upinit);
 	mat4 transf = modelview;
 	int percentage = 0;
+	int percentPrev = 0;
+	auto t_start = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < height; i++) {
-		if (i % 60 == 0) { // updates progress bar once every 20 height pixels
+		//
+		if (i % 20 == 0) { // updates progress bar once every 20 height pixels
+			auto t_end = std::chrono::high_resolution_clock::now();
 			percentage = ((float)i / height) * 100; // calculates percentage rendered based on height
+			int percChange = percentage -percentPrev ;
+			int percentDiff = 100 - percentage;
 			Clear();
-			progressBar(percentage); 
+			double elapsed = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+			float remaining = (int)(elapsed * percentDiff/percChange)/1000;
+			progressBar(percentage, remaining); 
+			percentPrev = percentage;
+			t_start = std::chrono::high_resolution_clock::now();
+
 		}
 		for (int j = 0; j < width; j++) {
 			Ray* ray = cam->generateRay((float)(i + 0.5f), (float)(j + 0.5f));
