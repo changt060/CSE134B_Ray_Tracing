@@ -149,8 +149,7 @@ int main(int argc, char* argv[]) {
 	int percentPrev = 0;
 	auto t_start = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < height; i++) {
-		//
-		if (i % 20 == 0) { // updates progress bar once every 20 height pixels
+		if (i % 60 == 0) { // updates progress bar once every 60 height pixels
 			auto t_end = std::chrono::high_resolution_clock::now();
 			percentage = ((float)i / height) * 100; // calculates percentage rendered based on height
 			int percChange = percentage -percentPrev ;

@@ -220,7 +220,7 @@ void readfile(const char* filename)
                             sphere->specular = specular;
                             sphere->shininess = shininess;
                             sphere->emission = emission;
-                            sphere->inverseT = glm::inverse(sphere->transform);
+                            sphere->inverseT = glm::inverse(transfstack.top());
                             primitives.push_back(sphere);
                         }
                     }
@@ -263,7 +263,7 @@ void readfile(const char* filename)
                             triangle->specular = specular;
                             triangle->shininess = shininess;
                             triangle->emission = emission;
-                            triangle->inverseT = glm::inverse(triangle->transform);
+                            triangle->inverseT = glm::inverse(transfstack.top());
                             primitives.push_back(triangle);
                         }
                     }
