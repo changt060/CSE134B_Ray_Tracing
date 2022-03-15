@@ -39,7 +39,7 @@ vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, ve
 	vec3 retval = lambert + phong;
 
 	if (lgttype == 1) { // Calculate attenuation for point light
-		//retval = retval / (r * r); //TODO UNCOMMENT//////////////////////////////
+		retval = retval / (attenuation[0] + attenuation[1] * r + attenuation[2]*(r* r)); //TODO UNCOMMENT//////////////////////////////
 	}
 	return retval;
 }
@@ -75,7 +75,13 @@ vec3 findColor(Intersection hit, Ray* ray, int depth) {
 		// Add up all the lights
 		for (int i = 0; i < lightpos.size(); i++) {
 
-			float r = 1;
+			float r = 1.0f;
+			Ray ray = Ray(hit.position + 0.01f * normalize(lightpos[i] - hit.position), lightpos[i] - hit.position);
+			bool Vi = false;
+			Intersection ShadowIntersect = hit.findIntersection(ray, primitives);
+			if (ShadowIntersect.distance >= distance(lightpos[i], ray.pos)) {
+				Vi = true;
+			}
 			vec3 direction;
 			// directional light
 			if (lgtType[i] == 0) { 
@@ -94,7 +100,7 @@ vec3 findColor(Intersection hit, Ray* ray, int depth) {
 			Intersection dummy = Intersection();
 			Intersection vInt = dummy.findIntersection(vRay, primitives);
 			//cout << vInt.distance << "\n";//////
-			if (vInt.distance == std::numeric_limits<float>::infinity()) {
+			if (Vi == true) {
 				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess, lgtType[i], r);
 				finalcolor = finalcolor + curCol;
 			}
@@ -110,7 +116,7 @@ vec3 findColor(Intersection hit, Ray* ray, int depth) {
 
 
 void init() {
-	maxdepth = 5;
+	maxdepth = 3;
 	attenuation = vec3(1.0, 0.0, 0.0); // only for point lights
 	filename = "sc1.png";
 }
