@@ -28,21 +28,6 @@ using namespace std;
 #include "Camera.h"
 #include "Sampler.cpp"
 
-
-
-/*void saveScreenshot(string fname) {
-  int pix = width * height;
-  BYTE *pixels = new BYTE[3*pix];
-  glReadBuffer(GL_FRONT);
-  glReadPixels(0,0,width,height,GL_BGR,GL_UNSIGNED_BYTE, pixels);
-
-  FIBITMAP *img = FreeImage_ConvertFromRawBits(pixels, width, height, width * 3, 24, 0xFF0000, 0x00FF00, 0x0000FF, false);
-
-  std::cout << "Saving screenshot: " << fname << "\n";
-
-  FreeImage_Save(FIF_PNG, img, fname.c_str(), 0);
-  delete pixels;
-}*/
 vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, vec3 mydiffuse,vec3 myspecular,float myshininess, bool lgttype, float r) {
 
 	float nDotL = dot(normal, direction);
@@ -54,66 +39,74 @@ vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, ve
 	vec3 retval = lambert + phong;
 
 	if (lgttype == 1) { // Calculate attenuation for point light
-		//retval = retval / (r * r); TODO UNCOMMENT//////////////////////////////
+		//retval = retval / (r * r); //TODO UNCOMMENT//////////////////////////////
 	}
 	return retval;
 }
 
-RGBQUAD findColor(Intersection hit) { 
+vec3 findColor(Intersection hit, Ray* ray, int depth) { 
 	// A couple predefined colors
-	RGBQUAD red = { 0, 0, 255, 0 };
+	/*RGBQUAD red = {0, 0, 255, 0};
 	RGBQUAD green = { 0.0f, 255.0f, 0.0f, 0.0f };
 	RGBQUAD blue = { 255.0f, 0.0f, 0.0f, 0.0f };
 	RGBQUAD black = { 0.0f, 0.0f, 0.0f, 0.0f };
-	RGBQUAD white = { 255.0f, 255.0f, 255.0f, 0.0f };
+	RGBQUAD white = { 255.0f, 255.0f, 255.0f, 0.0f };*/
+
+	// If we've exceeded the ray bounce limit, no more light is gathered.
+	if (depth <= 0) {
+		return { 0.0f, 0.0f, 0.0f };
+	}
+
 	// no intersection
 	if (hit.distance == std::numeric_limits<float>::infinity()) { 
-		return black;
+		return { 0.0f, 0.0f, 0.0f };
 	}
 	// intersection
 	else { 
 		// Lighting 
-			vec3 normal = hit.normal;
-			vec3 finalcolor;
-			vec3 eyepos = eyeinit;
-			vec3 mypos = hit.position;
-			vec3 eyedirn = normalize(eyepos - mypos);
+		vec3 normal = hit.normal;
+		vec3 finalcolor;
+		vec3 eyepos = ray->pos;
+		vec3 mypos = hit.position;
+		vec3 eyedirn = normalize(eyepos - mypos);
 			
-			finalcolor = hit.primitive->ambient + hit.primitive->emission;
+		finalcolor = hit.primitive->ambient + hit.primitive->emission;
 
-			// Add up all the lights
-			for (int i = 0; i < lightpos.size(); i++) {
+		// Add up all the lights
+		for (int i = 0; i < lightpos.size(); i++) {
 
-				float r = 1;
-				vec3 direction;
-				// directional light
-				if (lgtType[i] == 0) { 
-					direction = normalize(lightpos[i]);
-				}
-				// point light
-				else { 
-					direction = normalize(lightpos[i]-mypos);
-					r = distance(hit.position, lightpos[i]);
-				}
-				//cout << lightcol[i][0] << "," << lightcol[i][1] << "," << lightcol[i][2] << "\n";
-				vec3 halfAng = normalize(direction + eyedirn);
-				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess, lgtType[i], r);
-				finalcolor = finalcolor + curCol; 
-				/*if (finalcolor[0] > 1.0f) {
-					finalcolor[0] = floor(finalcolor[0]);
-				}
-				if (finalcolor[1] > 1.0f) {
-					finalcolor[1] = floor(finalcolor[1]);
-				}
-				if (finalcolor[2] > 1.0f) {
-					finalcolor[2] = floor(finalcolor[2]);
-				}*/
+			float r = 1;
+			vec3 direction;
+			// directional light
+			if (lgtType[i] == 0) { 
+				direction = normalize(lightpos[i]);
 			}
-			RGBQUAD finalcol = { finalcolor[2]*255.0f, finalcolor[1] * 255.0f, finalcolor[0] * 255.0f, 0 };
-			return finalcol;
-		
+			// point light
+			else { 
+				direction = normalize(lightpos[i]-mypos);
+				r = distance(hit.position, lightpos[i]);
+			}
+			//cout << lightcol[i][0] << "," << lightcol[i][1] << "," << lightcol[i][2] << "\n";
+			vec3 halfAng = normalize(direction + eyedirn);
+			
+			//float Vi = 1;
+			Ray vRay = Ray(hit.position + 0.001f * direction, direction);
+			Intersection dummy = Intersection();
+			Intersection vInt = dummy.findIntersection(vRay, primitives);
+			//cout << vInt.distance << "\n";//////
+			if (vInt.distance == std::numeric_limits<float>::infinity()) {
+				vec3 curCol = ComputeLight(direction, lightcol[i], normal, halfAng, hit.primitive->diffuse, hit.primitive->specular, hit.primitive->shininess, lgtType[i], r);
+				finalcolor = finalcolor + curCol;
+			}
 		}
+		Ray* reflectedR = new Ray(hit.position + normal * 0.001f, normalize(2.0f*(glm::dot(normal, -normalize(ray->dir))*normal) + ray->dir));
+		Intersection dummy = Intersection();
+		vec3 recursivecol = hit.primitive->specular * findColor(dummy.findIntersection(*reflectedR, primitives), reflectedR, depth - 1);
+		finalcolor = finalcolor + recursivecol;
+		return finalcolor;
+		
 	}
+}
 
 
 void init() {
@@ -144,7 +137,6 @@ int main(int argc, char* argv[]) {
   FIBITMAP* image = FreeImage_Allocate(width, height, 24);
 	Camera* cam = new Camera(upinit, center, eyeinit, fovy);
 	modelview = Transform::lookAt(eyeinit, center, upinit);
-	mat4 transf = modelview;
 	int percentage = 0;
 	int percentPrev = 0;
 	auto t_start = std::chrono::high_resolution_clock::now();
@@ -164,8 +156,9 @@ int main(int argc, char* argv[]) {
 		}
 		for (int j = 0; j < width; j++) {
 			Ray* ray = cam->generateRay((float)(i + 0.5f), (float)(j + 0.5f));
-			Intersection hit = intersect->findIntersection(*ray, primitives, transf);
-			RGBQUAD color = findColor(hit);
+			Intersection hit = intersect->findIntersection(*ray, primitives);
+			vec3 finalcolor = findColor(hit, ray, maxdepth);
+			RGBQUAD color = { finalcolor[2] * 255.0f, finalcolor[1] * 255.0f, finalcolor[0] * 255.0f, 0 };
 			FreeImage_SetPixelColor(image, j, i, &color);
 		}
 	}

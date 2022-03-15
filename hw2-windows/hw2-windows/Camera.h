@@ -28,7 +28,6 @@ public:
 	float distance;
 	vec3 position;
 	vec3 normal;
-	//vec3 direction;
 	Primitive* primitive;
 	Intersection() {
 		this->distance = std::numeric_limits<float>::infinity();
@@ -40,6 +39,7 @@ public:
 		mat4 inverseTransform = obj->inverseT;
 		ray.pos = vec3(inverseTransform * vec4(ray.pos, 1.0f));
 		ray.dir = vec3(inverseTransform * vec4(ray.dir, 0.0f));
+		//ray.dir = normalize(ray.dir); ///////////////////////////////////////////////////
 		if (obj->type == 3) {
 			// Triangle
 			vec3 A = obj->v1;
@@ -80,6 +80,7 @@ public:
 			vec3 e = ray.pos;
 			vec3 ctr = obj->center;
 			vec3 d = ray.dir;
+			//std::cout << glm::length(d) << "\n";///////////
 			//std::cout <<"pos: " << ray.pos[0] << ray.pos[1] << ray.pos[2] << "\n";
 			//std::cout << "dir: " << ray.dir[0] << ray.dir[1] << ray.dir[2] << "\n";
 			
@@ -114,15 +115,16 @@ public:
 				hit.position = ray.pos + t1 * ray.dir;
 				
 			}
-			hit.position = vec3(obj->transform * vec4(hit.position, 1.0f));
+			
 			vec3 n = normalize(hit.position - hit.primitive->center);
+			hit.position = vec3(obj->transform * vec4(hit.position, 1.0f));
 			vec3 normal = mat3(transpose(inverseTransform)) * n;
 			hit.normal = normalize(normal);
 		}
 		return hit;
 	}
 
-	Intersection findIntersection(Ray ray, vector<Primitive*> scene, mat4 transf) {
+	Intersection findIntersection(Ray ray, vector<Primitive*> scene) {
 		float min_distance = std::numeric_limits<float>::infinity(); //start at infinity
 		Intersection hit = Intersection();
 		hit.distance = std::numeric_limits<float>::infinity();
